@@ -24,7 +24,11 @@ actor_movie = db.Table(
 
 
 class Movie(db.Model):
-    pass
+    __tablename__ = "movies"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(), nullable=False)
+    release_date = db.Column(db.Datetime, nullable=False)
+    actors = db.relationship("Actor", secondary=actor_movie, backref="movies")
 
 
 class Actor(db.Model):
