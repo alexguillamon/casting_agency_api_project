@@ -36,6 +36,6 @@ class Actor(db.Model):
     __tablename__ = "actors"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
-    age = db.Column(db.Datetime, nullable=False)
+    age = db.Column(db.DateTime, nullable=False)
     gender = db.Column(db.Enum(Gender), nullable=False)
     actors = db.relationship("Movie", secondary=actor_movie, backref="actors")
