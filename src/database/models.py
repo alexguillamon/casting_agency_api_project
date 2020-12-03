@@ -59,4 +59,24 @@ class Actor(db.Model):
     name = db.Column(db.String(), nullable=False)
     age = db.Column(db.DateTime, nullable=False)
     gender = db.Column(db.Enum(Gender), nullable=False)
-    actors = db.relationship("Movie", secondary=actor_movie, backref="actors")
+    movies = db.relationship("Movie", secondary=actor_movie, backref="cast")
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "age": self.age,
+            "gender": self.gender,
+            "movies": self.movies
+        }
