@@ -15,9 +15,6 @@ class CastingTestingCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
-    def test_dummy(self):
-        self.assertTrue(True)
-
     def test_get_actors(self):
         res = self.client.get("/actors")
         data = res.get_json()
