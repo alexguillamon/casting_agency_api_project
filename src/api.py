@@ -1,7 +1,6 @@
 from settings import ITEMS_PER_PAGE
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from database.models import db, setup_db, Movie, Actor
 from auth.auth import AuthError, requires_auth
 
