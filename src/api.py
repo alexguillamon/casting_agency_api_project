@@ -20,7 +20,15 @@ def create_app():
     # Actors Routes
     @app.route("/actors")
     def get_actors():
-        pass
+        page = request.args.get("page", 1, int)
+        pagination = Actor.query.paginate(page=page, per_page=ITEMS_PER_PAGE)
+        return {
+            "success": True,
+            "actors": [actor.format() for actor in pagination.items],
+            "page": page,
+            "page_count": pagination.pages,
+            "total_actors": pagination.total
+        }
 
     @app.route("/actors", methods=["POST"])
     def create_actor():
