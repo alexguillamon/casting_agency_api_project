@@ -17,10 +17,41 @@ def create_app():
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
-    @app.route("/")
-    def index():
-        return {"success": True}
+    # Actors Routes
+    @app.route("/actors")
+    def get_actors():
+        pass
 
+    @app.route("/actors", methods=["POST"])
+    def create_actor():
+        pass
+
+    @app.route("/actors", methods=["PATCH"])
+    def modify_actor():
+        pass
+
+    @app.route("/actors", methods=["DELETE"])
+    def delete_actor():
+        pass
+
+    # Movies Routes
+    @app.route("/movies")
+    def get_movies():
+        pass
+
+    @app.route("/movies", methods=["POST"])
+    def create_movie():
+        pass
+
+    @app.route("/movies", methods=["PATCH"])
+    def modify_movie():
+        pass
+
+    @app.route("/movies", methods=["DELETE"])
+    def delete_movie():
+        pass
+
+    # Error Handlers
     @app.errorhandler(400)
     def bad_request(error):
         return (
