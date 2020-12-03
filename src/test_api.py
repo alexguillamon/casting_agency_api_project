@@ -18,6 +18,12 @@ class CastingTestingCase(unittest.TestCase):
     def test_dummy(self):
         self.assertTrue(True)
 
+    def test_get_actors(self):
+        res = self.client.get("/actors")
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
 
 if __name__ == "__main__":
     unittest.main()
