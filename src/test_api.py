@@ -1,6 +1,4 @@
 import unittest
-import json
-from flask_sqlalchemy import SQLAlchemy
 from api import create_app
 from database.models import db, setup_db, Movie, Actor
 
