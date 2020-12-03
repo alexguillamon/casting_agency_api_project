@@ -9,7 +9,7 @@ migrate = Migrate()
 
 
 def setup_db(app, test=False):
-    app.config["SQLALCHEMY_DATABASE_URI"] = DB_PATH if not test else TEST_DB_PATH
+    app.config["SQLALCHEMY_DATABASE_URI"] = TEST_DB_PATH if test else DB_PATH
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
@@ -19,8 +19,10 @@ def setup_db(app, test=False):
 
 actor_movie = db.Table(
     "actor_movie",
-    db.Column("actor_id", db.Integer, db.ForeignKey("actors.id"), primary_key=True),
-    db.Column("movie_id", db.Integer, db.ForeignKey("movies.id"), primary_key=True),
+    db.Column("actor_id", db.Integer, db.ForeignKey(
+        "actors.id"), primary_key=True),
+    db.Column("movie_id", db.Integer, db.ForeignKey(
+        "movies.id"), primary_key=True),
 )
 
 
