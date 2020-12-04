@@ -5,9 +5,9 @@ from database.models import db, setup_db, Movie, Actor
 from auth.auth import AuthError, requires_auth
 
 
-def create_app():
+def create_app(test=False):
     app = Flask(__name__)
-    setup_db(app)
+    setup_db(app, test=test)
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
