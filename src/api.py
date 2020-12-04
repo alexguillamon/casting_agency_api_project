@@ -44,7 +44,15 @@ def create_app(test=False):
     # Movies Routes
     @app.route("/movies")
     def get_movies():
-        pass
+        page = request.args.get("page", 1, int)
+        pagination = Movie.query.paginate(page=page, per_page=ITEMS_PER_PAGE)
+        return {
+            "success": True,
+            "movies": [movie.format() for movie in pagination.items],
+            "page": page,
+            "page_count": pagination.pages,
+            "total_movies": pagination.total
+        }
 
     @app.route("/movies", methods=["POST"])
     def create_movie():
