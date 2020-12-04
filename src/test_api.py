@@ -12,6 +12,7 @@ class CastingTestingCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
+    # Actors test cases
     def test_get_actors(self):
         res = self.client.get("/actors")
         data = res.get_json()
