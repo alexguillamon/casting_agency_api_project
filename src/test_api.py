@@ -1,6 +1,6 @@
 import unittest
 from api import create_app
-from database.models import db, setup_db, Movie, Actor
+from database.models import db, Movie, Actor
 
 
 class CastingTestingCase(unittest.TestCase):
