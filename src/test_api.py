@@ -25,6 +25,20 @@ class CastingTestingCase(unittest.TestCase):
         self.assertFalse(data["success"])
         self.assertEqual(data["error"], 404)
 
+    # Movies test cases
+    def test_get_movies(self):
+        res = self.client.get("/movies")
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+    def test_get_movies_error(self):
+        res = self.client.get("/movies?page=2")
+        data = res.get_json()
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["error"], 404)
+
 
 if __name__ == "__main__":
     unittest.main()
