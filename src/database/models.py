@@ -30,7 +30,7 @@ class Movie(db.Model):
     __tablename__ = "movies"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
-    release_date = db.Column(db.DateTime, nullable=False)
+    release_date = db.Column(db.Date, nullable=False)
     cast = db.relationship("Actor", secondary=actor_movie, backref="movies")
 
     def insert(self):
@@ -57,7 +57,7 @@ class Actor(db.Model):
     __tablename__ = "actors"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
-    age = db.Column(db.DateTime, nullable=False)
+    DOB = db.Column(db.Date, nullable=False)
     gender = db.Column(db.Enum(Gender), nullable=False)
 
     def insert(self):
