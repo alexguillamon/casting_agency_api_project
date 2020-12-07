@@ -5,8 +5,6 @@ from database.models import db, setup_db, Movie, Actor
 from database.schemas import actor_schema, movie_schema
 from marshmallow.exceptions import ValidationError
 from auth.auth import AuthError, requires_auth
-from utils.gender import Gender
-from datetime import date
 
 
 def create_app(test=False):
