@@ -138,6 +138,16 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res1.status_code, 422)
         self.assertFalse(data1["success"])
 
+        res2 = self.client.post(
+            "/movies", json={
+                "title": 'Title',
+                "release_date": '2002-03-30',
+                "cast": [35, 50, 3]
+            })
+        data2 = res2.get_json()
+        self.assertEqual(res2.status_code, 404)
+        self.assertFalse(data2["success"])
+
 
 if __name__ == "__main__":
     unittest.main()
