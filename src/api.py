@@ -178,9 +178,19 @@ def create_app(test=False):
             db.session.close()
         return res
 
-    @app.route("/movies", methods=["DELETE"])
-    def delete_movie():
-        pass
+    @app.route("/movies/<int:movie_id>", methods=["DELETE"])
+    def delete_movie(movie_id):
+        movie = Movie.query.get(movie_id)
+        if not movie:
+            abort(404)
+        try:
+            movie.delete()
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+        return {"success": True}
 
     ####
     #  Error Handlers
