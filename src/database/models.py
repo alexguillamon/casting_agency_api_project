@@ -38,7 +38,18 @@ class Movie(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self):
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if key == "cast":
+                for actor in value:
+                    self.movies.append(actor)
+                continue
+            if key == "detach_cast":
+                for actor in value:
+                    self.movies.remove(actor)
+                continue
+            if hasattr(self, key):
+                setattr(self, key, value)
         db.session.commit()
 
     def delete(self):
@@ -65,7 +76,18 @@ class Actor(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update(self):
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if key == "movies":
+                for movie in value:
+                    self.movies.append(movie)
+                continue
+            if key == "detach_movies":
+                for movie in value:
+                    self.movies.remove(movie)
+                continue
+            if hasattr(self, key):
+                setattr(self, key, value)
         db.session.commit()
 
     def delete(self):
