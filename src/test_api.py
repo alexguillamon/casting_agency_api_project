@@ -260,6 +260,24 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
+    def test_delete_movie(self):
+        res = self.client.delete("/movies/1")
+        data = res.get_json()
+
+        with self.app.app_context():
+            movie = Movie.query.get(1)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertIsNone(movie)
+
+    def test_delete_movie_error(self):
+        res = self.client.delete("/movies/40")
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data["success"])
+
 
 if __name__ == "__main__":
     unittest.main()
