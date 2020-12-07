@@ -53,9 +53,37 @@ def create_app(test=False):
             db.session.close()
         return res
 
-    @app.route("/actors", methods=["PATCH"])
-    def modify_actor():
-        pass
+    @app.route("/actors/<int:actor_id>", methods=["PATCH"])
+    def modify_actor(actor_id):
+        data = request.get_json()
+        if not data:
+            abort(400)
+        try:
+            data = actor_schema_partial.load(data)
+        except ValidationError:
+            abort(422)
+        if "movies" in data:
+            data["movies"] = [Movie.query.get(id) for id in data["movies"]]
+            if None in data["movies"]:
+                abort(404)
+        if "detach_movies" in data:
+            data["detach_movies"] = [Movie.query.get(
+                id) for id in data["detach_movies"]]
+            if None in data["detach_movies"]:
+                abort(404)
+
+        actor = Actor.query.get(actor_id)
+        if not actor:
+            abort(404)
+        res = {"success": True}
+        try:
+            actor.update(**data)
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+        return res
 
     @app.route("/actors", methods=["DELETE"])
     def delete_actor():
