@@ -2,7 +2,7 @@ from settings import ITEMS_PER_PAGE
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from database.models import db, setup_db, Movie, Actor
-from database.schemas import actor_schema, movie_schema, actor_schema_partial
+from database.schemas import actor_schema, movie_schema, actor_schema_partial, movie_schema_partial
 from marshmallow.exceptions import ValidationError
 from auth.auth import AuthError, requires_auth
 
@@ -132,9 +132,38 @@ def create_app(test=False):
             db.session.close()
         return res
 
-    @app.route("/movies", methods=["PATCH"])
-    def modify_movie():
-        pass
+    @app.route("/movies/<int:movie_id>", methods=["PATCH"])
+    def modify_movie(movie_id):
+        data = request.get_json()
+        if not data:
+            abort(400)
+        try:
+            data = movie_schema_partial.load(data)
+        except ValidationError:
+            abort(422)
+        if "cast" in data:
+            data["cast"] = [Actor.query.get(id) for id in data["cast"]]
+            if None in data["cast"]:
+                abort(404)
+        if "detach_cast" in data:
+            data["detach_cast"] = [Actor.query.get(
+                id) for id in data["detach_cast"]]
+            if None in data["detach_cast"]:
+                abort(404)
+
+        movie = Movie.query.get(movie_id)
+        if not movie:
+            abort(404)
+        res = {"success": True}
+        try:
+            movie.update(**data)
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+        return res
 
     @app.route("/movies", methods=["DELETE"])
     def delete_movie():
