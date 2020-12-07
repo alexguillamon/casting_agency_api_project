@@ -1,6 +1,8 @@
 import unittest
 from api import create_app
 from database.models import db, Movie, Actor
+from utils.gender import Gender
+from utils.db_init_data import seed
 
 
 class CastingTestingCase(unittest.TestCase):
