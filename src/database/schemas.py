@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, validate
+from marshmallow.utils import EXCLUDE
 
 
 class ActorSchema(Schema):
@@ -17,9 +18,9 @@ class MovieSchema(Schema):
     cast = fields.List(fields.String)
 
 
-actor_schema = ActorSchema()
+actor_schema = ActorSchema(unknown=EXCLUDE)
 actor_only_schema = ActorSchema(exclude=["movies"])
 
 
-movie_schema = MovieSchema()
+movie_schema = MovieSchema(unknown=EXCLUDE)
 movie_only_schema = MovieSchema(exclude=["cast"])
