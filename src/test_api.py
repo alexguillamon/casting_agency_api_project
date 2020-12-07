@@ -85,7 +85,7 @@ class CastingTestingCase(unittest.TestCase):
                 "movies": [30]
             })
         data3 = res3.get_json()
-        self.assertEqual(res3.status_code, 422)
+        self.assertEqual(res3.status_code, 404)
         self.assertFalse(data3["success"])
 
     # Movies test cases
