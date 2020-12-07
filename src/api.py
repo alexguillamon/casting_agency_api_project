@@ -2,7 +2,7 @@ from settings import ITEMS_PER_PAGE
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from database.models import db, setup_db, Movie, Actor
-from database.schemas import actor_schema
+from database.schemas import actor_schema, movie_schema
 from marshmallow.exceptions import ValidationError
 from auth.auth import AuthError, requires_auth
 from utils.gender import Gender
@@ -79,7 +79,25 @@ def create_app(test=False):
 
     @app.route("/movies", methods=["POST"])
     def create_movie():
-        pass
+        data = request.get_json()
+        if not data:
+            abort(400)
+        try:
+            data = movie_schema.load(data)
+        except ValidationError:
+            abort(422)
+        movie = Movie(**data)
+        res = {"success": True,
+               "id": 0}
+        try:
+            movie.insert()
+            res["id"] = movie.id
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+        return res
 
     @app.route("/movies", methods=["PATCH"])
     def modify_movie():
