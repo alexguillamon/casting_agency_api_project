@@ -42,11 +42,11 @@ class Movie(db.Model):
         for key, value in kwargs.items():
             if key == "cast":
                 for actor in value:
-                    self.movies.append(actor)
+                    self.cast.append(actor)
                 continue
             if key == "detach_cast":
                 for actor in value:
-                    self.movies.remove(actor)
+                    self.cast.remove(actor)
                 continue
             if hasattr(self, key):
                 setattr(self, key, value)
