@@ -89,11 +89,24 @@ def create_app(test=False):
             db.session.close()
         return res
 
-    @app.route("/actors", methods=["DELETE"])
-    def delete_actor():
-        pass
+    @app.route("/actors/<int:actor_id>", methods=["DELETE"])
+    def delete_actor(actor_id):
+        actor = Actor.query.get(actor_id)
+        if not actor:
+            abort(404)
+        try:
+            actor.delete()
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+        return {"success": True}
 
+    ####
     # Movies Routes
+    ####
+
     @app.route("/movies")
     def get_movies():
         page = request.args.get("page", 1, int)
@@ -169,7 +182,10 @@ def create_app(test=False):
     def delete_movie():
         pass
 
-    # Error Handlers
+    ####
+    #  Error Handlers
+    ####
+
     @app.errorhandler(400)
     def bad_request(error):
         return (
