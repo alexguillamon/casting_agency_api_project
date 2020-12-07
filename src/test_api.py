@@ -7,6 +7,8 @@ class CastingTestingCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app(test=True)
         self.client = self.app.test_client()
+        with self.app.app_context():
+            seed()
 
     def tearDown(self):
         with self.app.app_context():
