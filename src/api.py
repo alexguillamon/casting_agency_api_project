@@ -42,8 +42,7 @@ def create_app(test=False):
             data = actor_schema.load(data)
         except ValidationError:
             abort(422)
-        actor = Actor(name=data["name"], DOB=data["DOB"],
-                      gender=Gender[data["gender"]])
+        actor = Actor(**data)
         res = {"success": True,
                "id": 0}
         try:
