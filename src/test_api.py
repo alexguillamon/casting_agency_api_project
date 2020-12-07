@@ -103,6 +103,41 @@ class CastingTestingCase(unittest.TestCase):
         self.assertFalse(data["success"])
         self.assertEqual(data["error"], 404)
 
+    def test_post_movie(self):
+        res = self.client.post(
+            "/movies", json={
+                "title": "The day before yesterday",
+                "release_date": '2021-03-11',
+            })
+        data = res.get_json()
+
+        with self.app.app_context():
+            movie = Movie.query.filter_by(
+                title="The day before yesterday").first()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertEqual(data["id"], movie.id)
+
+    def test_post_movie_error(self):
+        res = self.client.post(
+            "/movies", json={
+                "title": '',
+                "release_date": '2002-03-01',
+            })
+        data = res.get_json()
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data["success"])
+
+        res1 = self.client.post(
+            "/movies", json={
+                "title": 'Title',
+                "release_date": '2002-03-33',
+            })
+        data1 = res1.get_json()
+        self.assertEqual(res1.status_code, 422)
+        self.assertFalse(data1["success"])
+
 
 if __name__ == "__main__":
     unittest.main()
