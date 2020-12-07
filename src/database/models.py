@@ -2,6 +2,7 @@ from settings import DB_PATH, TEST_DB_PATH
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from utils.gender import Gender
+from database.schemas import actor_only_schema, movie_only_schema
 
 
 db = SQLAlchemy()
@@ -49,7 +50,7 @@ class Movie(db.Model):
             "id": self.id,
             "title": self.title,
             "release_date": self.release_date,
-            "cast": self.cast
+            "cast": [actor_only_schema.dump(actor) for actor in self.cast]
         }
 
 
@@ -75,7 +76,7 @@ class Actor(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "age": self.age,
-            "gender": self.gender,
-            "movies": self.movies
+            "DOB": self.DOB,
+            "gender": self.gender.name,
+            "movies": [movie_only_schema.dump(movie) for movie in self.movies]
         }
