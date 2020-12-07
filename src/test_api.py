@@ -88,6 +88,53 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res3.status_code, 404)
         self.assertFalse(data3["success"])
 
+    def test_patch_actor(self):
+        res = self.client.patch("/actors/1", json={
+            "name": "New Name",
+            "movies": [2, 3],
+            "detach_movies": [1]
+        })
+        data = res.get_json()
+        with self.app.app_context():
+            actor = Actor.query.get(1)
+            movies = actor.movies
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertEqual(actor.name, "New Name")
+        self.assertEqual(len(movies), 2)
+
+    def test_patch_actor_error(self):
+        res = self.client.patch("/actors/1", json={
+            "name": "",
+            "movies": [2, 3],
+            "detach_movies": [1]
+        })
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data["success"])
+
+        res = self.client.patch("/actors/1", json={
+            "name": "New Name",
+            "movies": [2, 3, 20],
+            "detach_movies": [1]
+        })
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data["success"])
+
+        res = self.client.patch("/actors/1", json={
+            "name": "New Name",
+            "movies": [2, 3],
+            "detach_movies": [60]
+        })
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data["success"])
+
     # Movies test cases
 
     def test_get_movies(self):
@@ -147,53 +194,6 @@ class CastingTestingCase(unittest.TestCase):
         data2 = res2.get_json()
         self.assertEqual(res2.status_code, 404)
         self.assertFalse(data2["success"])
-
-    def test_patch_actor(self):
-        res = self.client.patch("/actors/1", json={
-            "name": "New Name",
-            "movies": [2, 3],
-            "detach_movies": [1]
-        })
-        data = res.get_json()
-        with self.app.app_context():
-            actor = Actor.query.get(1)
-            movies = actor.movies
-
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertEqual(actor.name, "New Name")
-        self.assertEqual(len(movies), 2)
-
-    def test_patch_actor_error(self):
-        res = self.client.patch("/actors/1", json={
-            "name": "",
-            "movies": [2, 3],
-            "detach_movies": [1]
-        })
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 422)
-        self.assertFalse(data["success"])
-
-        res = self.client.patch("/actors/1", json={
-            "name": "New Name",
-            "movies": [2, 3, 20],
-            "detach_movies": [1]
-        })
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
-
-        res = self.client.patch("/actors/1", json={
-            "name": "New Name",
-            "movies": [2, 3],
-            "detach_movies": [60]
-        })
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
 
 
 if __name__ == "__main__":
