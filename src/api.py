@@ -40,6 +40,10 @@ def create_app(test=False):
             data = actor_schema.load(data)
         except ValidationError:
             abort(422)
+        if "movies" in data:
+            data["movies"] = [Movie.query.get(id) for id in data["movies"]]
+            if None in data["movies"]:
+                abort(404)
         actor = Actor(**data)
         res = {"success": True,
                "id": 0}
@@ -111,6 +115,10 @@ def create_app(test=False):
             data = movie_schema.load(data)
         except ValidationError:
             abort(422)
+        if "cast" in data:
+            data["cast"] = [Actor.query.get(id) for id in data["cast"]]
+            if None in data["cast"]:
+                abort(404)
         movie = Movie(**data)
         res = {"success": True,
                "id": 0}
