@@ -288,6 +288,112 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
+    # Roles test cases
+    def test_assistant_role(self):
+        res = self.client.get("/actors", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.get("/movies", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+    def test_assistant_role_error(self):
+        res = self.client.post("/actors", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.post("/movies", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.patch("/actors/1", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.patch("/movies/1", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.delete("/actors/1", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.delete("/movies/1", headers=self.assistant_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+    def test_director_role(self):
+        res = self.client.get("/actors", headers=self.director_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.post(
+            "/actors", json={
+                "name": 'alejandro',
+                "DOB": '2002-03-11',
+                "gender": str(Gender.male.name)
+            }, headers=self.director_header)
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.patch("/actors/1", json={
+            "name": "New Name",
+            "movies": [2, 3],
+            "detach_movies": [1]
+        }, headers=self.director_header)
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.delete("/actors/1", headers=self.director_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.get("/movies", headers=self.director_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+        res = self.client.patch("/movies/1", json={
+            "title": "New Name",
+            "cast": [2, 3],
+            "detach_cast": []
+        }, headers=self.director_header)
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data["success"])
+
+    def test_director_role_error(self):
+        res = self.client.post(
+            "/movies", json={
+                "title": "The day before yesterday",
+                "release_date": '2021-03-11',
+            }, headers=self.director_header)
+        data = res.get_json()
+
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
+        res = self.client.delete("/movies/1", headers=self.director_header)
+        data = res.get_json()
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data["success"])
+
 
 if __name__ == "__main__":
     unittest.main()
