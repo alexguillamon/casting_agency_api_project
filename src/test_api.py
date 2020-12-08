@@ -1,3 +1,4 @@
+from settings import ASSISTANT_TOKEN, DIRECTOR_TOKEN, PRODUCER_TOKEN
 import unittest
 from api import create_app
 from database.models import db, Movie, Actor
