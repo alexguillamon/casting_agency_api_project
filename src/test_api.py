@@ -16,15 +16,24 @@ class CastingTestingCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
+    header = {"Content-Type": "application/json",
+              "Authorization": f"Bearer {PRODUCER_TOKEN}"}
+    assistant_header = {"Content-Type": "application/json",
+                        "Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+    director_header = {"Content-Type": "application/json",
+                       "Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+    producer_header = {"Content-Type": "application/json",
+                       "Authorization": f"Bearer {PRODUCER_TOKEN}"}
     # Actors test cases
+
     def test_get_actors(self):
-        res = self.client.get("/actors")
+        res = self.client.get("/actors", headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data["success"])
 
     def test_get_actors_error(self):
-        res = self.client.get("/actors?page=2")
+        res = self.client.get("/actors?page=2", headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
@@ -36,7 +45,7 @@ class CastingTestingCase(unittest.TestCase):
                 "name": 'alejandro',
                 "DOB": '2002-03-11',
                 "gender": str(Gender.male.name)
-            })
+            }, headers=self.header)
         data = res.get_json()
 
         with self.app.app_context():
@@ -52,7 +61,7 @@ class CastingTestingCase(unittest.TestCase):
                 "name": 'alejandro',
                 "DOB": '2002-03-33',
                 "gender": Gender.male.name
-            })
+            }, headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 422)
         self.assertFalse(data["success"])
@@ -62,7 +71,7 @@ class CastingTestingCase(unittest.TestCase):
                 "name": 'alejandro',
                 "DOB": '2002-03-30',
                 "gender": "not a gender"
-            })
+            }, headers=self.header)
         data1 = res1.get_json()
         self.assertEqual(res1.status_code, 422)
         self.assertFalse(data1["success"])
@@ -72,7 +81,7 @@ class CastingTestingCase(unittest.TestCase):
                 "name": '',
                 "DOB": '2002-03-30',
                 "gender": "not a gender"
-            })
+            }, headers=self.header)
         data2 = res2.get_json()
         self.assertEqual(res2.status_code, 422)
         self.assertFalse(data2["success"])
@@ -83,7 +92,7 @@ class CastingTestingCase(unittest.TestCase):
                 "DOB": '2002-03-30',
                 "gender": Gender.male.name,
                 "movies": [30]
-            })
+            }, headers=self.header)
         data3 = res3.get_json()
         self.assertEqual(res3.status_code, 404)
         self.assertFalse(data3["success"])
@@ -93,7 +102,7 @@ class CastingTestingCase(unittest.TestCase):
             "name": "New Name",
             "movies": [2, 3],
             "detach_movies": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
         with self.app.app_context():
             actor = Actor.query.get(1)
@@ -109,7 +118,7 @@ class CastingTestingCase(unittest.TestCase):
             "name": "",
             "movies": [2, 3],
             "detach_movies": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 422)
@@ -119,7 +128,7 @@ class CastingTestingCase(unittest.TestCase):
             "name": "New Name",
             "movies": [2, 3, 20],
             "detach_movies": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
@@ -129,14 +138,14 @@ class CastingTestingCase(unittest.TestCase):
             "name": "New Name",
             "movies": [2, 3],
             "detach_movies": [60]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
     def test_delete_actor(self):
-        res = self.client.delete("/actors/1")
+        res = self.client.delete("/actors/1", headers=self.header)
         data = res.get_json()
 
         with self.app.app_context():
@@ -147,7 +156,7 @@ class CastingTestingCase(unittest.TestCase):
         self.assertIsNone(actor)
 
     def test_delete_actor_error(self):
-        res = self.client.delete("/actors/40")
+        res = self.client.delete("/actors/40", headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
@@ -156,13 +165,13 @@ class CastingTestingCase(unittest.TestCase):
     # Movies test cases
 
     def test_get_movies(self):
-        res = self.client.get("/movies")
+        res = self.client.get("/movies", headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data["success"])
 
     def test_get_movies_error(self):
-        res = self.client.get("/movies?page=2")
+        res = self.client.get("/movies?page=2", headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
@@ -173,7 +182,7 @@ class CastingTestingCase(unittest.TestCase):
             "/movies", json={
                 "title": "The day before yesterday",
                 "release_date": '2021-03-11',
-            })
+            }, headers=self.header)
         data = res.get_json()
 
         with self.app.app_context():
@@ -189,7 +198,7 @@ class CastingTestingCase(unittest.TestCase):
             "/movies", json={
                 "title": '',
                 "release_date": '2002-03-01',
-            })
+            }, headers=self.header)
         data = res.get_json()
         self.assertEqual(res.status_code, 422)
         self.assertFalse(data["success"])
@@ -198,7 +207,7 @@ class CastingTestingCase(unittest.TestCase):
             "/movies", json={
                 "title": 'Title',
                 "release_date": '2002-03-33',
-            })
+            }, headers=self.header)
         data1 = res1.get_json()
         self.assertEqual(res1.status_code, 422)
         self.assertFalse(data1["success"])
@@ -208,7 +217,7 @@ class CastingTestingCase(unittest.TestCase):
                 "title": 'Title',
                 "release_date": '2002-03-30',
                 "cast": [35, 50, 3]
-            })
+            }, headers=self.header)
         data2 = res2.get_json()
         self.assertEqual(res2.status_code, 404)
         self.assertFalse(data2["success"])
@@ -218,7 +227,7 @@ class CastingTestingCase(unittest.TestCase):
             "title": "New Name",
             "cast": [2, 3],
             "detach_cast": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
         with self.app.app_context():
             movie = Movie.query.get(1)
@@ -234,7 +243,7 @@ class CastingTestingCase(unittest.TestCase):
             "title": "",
             "cast": [2, 3],
             "detach_cast": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 422)
@@ -244,7 +253,7 @@ class CastingTestingCase(unittest.TestCase):
             "title": "New Name",
             "cast": [2, 3, 20],
             "detach_cast": [1]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
@@ -254,14 +263,14 @@ class CastingTestingCase(unittest.TestCase):
             "title": "New Name",
             "cast": [2, 3],
             "detach_cast": [60]
-        })
+        }, headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
     def test_delete_movie(self):
-        res = self.client.delete("/movies/1")
+        res = self.client.delete("/movies/1", headers=self.header)
         data = res.get_json()
 
         with self.app.app_context():
@@ -272,7 +281,7 @@ class CastingTestingCase(unittest.TestCase):
         self.assertIsNone(movie)
 
     def test_delete_movie_error(self):
-        res = self.client.delete("/movies/40")
+        res = self.client.delete("/movies/40", headers=self.header)
         data = res.get_json()
 
         self.assertEqual(res.status_code, 404)
