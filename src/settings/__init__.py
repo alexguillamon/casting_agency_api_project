@@ -17,6 +17,11 @@ TEST_DB_NAME = os.getenv("TEST_DB_NAME")
 # Database paths
 DB_PATH = f"{DB_DIALECT}://{DB_USERNAME}@{DB_HOST}/{DB_NAME}"
 TEST_DB_PATH = "sqlite:///database/testing.db"
+# Testing Tokens
+ASSISTANT_TOKEN = os.getenv("ASSISTANT_TOKEN")
+DIRECTOR_TOKEN = os.getenv("DIRECTOR_TOKEN")
+PRODUCER_TOKEN = os.getenv("PRODUCER_TOKEN")
+
 
 # global pagination variable
 ITEMS_PER_PAGE = 100
