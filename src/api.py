@@ -20,6 +20,7 @@ def create_app(test=False):
 
     # Actors Routes
     @app.route("/actors")
+    @requires_auth("read:actors")
     def get_actors():
         page = request.args.get("page", 1, int)
         pagination = Actor.query.paginate(page=page, per_page=ITEMS_PER_PAGE)
@@ -32,6 +33,7 @@ def create_app(test=False):
         }
 
     @app.route("/actors", methods=["POST"])
+    @requires_auth("create:actors")
     def create_actor():
         data = request.get_json()
         if not data:
@@ -58,6 +60,7 @@ def create_app(test=False):
         return res
 
     @app.route("/actors/<int:actor_id>", methods=["PATCH"])
+    @requires_auth("patch:actors")
     def modify_actor(actor_id):
         data = request.get_json()
         if not data:
@@ -90,6 +93,7 @@ def create_app(test=False):
         return res
 
     @app.route("/actors/<int:actor_id>", methods=["DELETE"])
+    @requires_auth("delete:actors")
     def delete_actor(actor_id):
         actor = Actor.query.get(actor_id)
         if not actor:
@@ -108,6 +112,7 @@ def create_app(test=False):
     ####
 
     @app.route("/movies")
+    @requires_auth("read:movies")
     def get_movies():
         page = request.args.get("page", 1, int)
         pagination = Movie.query.paginate(page=page, per_page=ITEMS_PER_PAGE)
@@ -120,6 +125,7 @@ def create_app(test=False):
         }
 
     @app.route("/movies", methods=["POST"])
+    @requires_auth("create:movies")
     def create_movie():
         data = request.get_json()
         if not data:
@@ -146,6 +152,7 @@ def create_app(test=False):
         return res
 
     @app.route("/movies/<int:movie_id>", methods=["PATCH"])
+    @requires_auth("patch:movies")
     def modify_movie(movie_id):
         data = request.get_json()
         if not data:
@@ -179,6 +186,7 @@ def create_app(test=False):
         return res
 
     @app.route("/movies/<int:movie_id>", methods=["DELETE"])
+    @requires_auth("delete:movies")
     def delete_movie(movie_id):
         movie = Movie.query.get(movie_id)
         if not movie:
