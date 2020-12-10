@@ -2,7 +2,12 @@ from settings import ITEMS_PER_PAGE
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from database.models import db, setup_db, Movie, Actor
-from database.schemas import actor_schema, movie_schema, actor_schema_partial, movie_schema_partial
+from database.schemas import (
+    actor_schema,
+    movie_schema,
+    actor_schema_partial,
+    movie_schema_partial
+)
 from marshmallow.exceptions import ValidationError
 from auth.auth import AuthError, requires_auth
 
