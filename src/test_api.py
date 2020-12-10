@@ -303,32 +303,32 @@ class CastingTestingCase(unittest.TestCase):
     def test_assistant_role_error(self):
         res = self.client.post("/actors", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.post("/movies", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.patch("/actors/1", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.patch("/movies/1", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.delete("/actors/1", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.delete("/movies/1", headers=self.assistant_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
     def test_director_role(self):
@@ -386,12 +386,12 @@ class CastingTestingCase(unittest.TestCase):
             }, headers=self.director_header)
         data = res.get_json()
 
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
         res = self.client.delete("/movies/1", headers=self.director_header)
         data = res.get_json()
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 403)
         self.assertFalse(data["success"])
 
 
