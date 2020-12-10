@@ -57,7 +57,7 @@ def create_app(test=False):
         try:
             actor.insert()
             res["id"] = actor.id
-        except:
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
@@ -90,7 +90,7 @@ def create_app(test=False):
         res = {"success": True}
         try:
             actor.update(**data)
-        except:
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
@@ -105,7 +105,7 @@ def create_app(test=False):
             abort(404)
         try:
             actor.delete()
-        except:
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
@@ -149,7 +149,7 @@ def create_app(test=False):
         try:
             movie.insert()
             res["id"] = movie.id
-        except:
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
@@ -182,8 +182,7 @@ def create_app(test=False):
         res = {"success": True}
         try:
             movie.update(**data)
-        except Exception as e:
-            print(e)
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
@@ -198,7 +197,7 @@ def create_app(test=False):
             abort(404)
         try:
             movie.delete()
-        except:
+        except Exception:
             db.session.rollback()
             abort(500)
         finally:
