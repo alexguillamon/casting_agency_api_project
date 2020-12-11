@@ -24,7 +24,7 @@ def upgrade():
                     sa.Column('name', sa.String(), nullable=False),
                     sa.Column('DOB', sa.Date(), nullable=False),
                     sa.Column('gender', ENUM('male', 'female', 'other',
-                                             name='gender', create_type=False), nullable=False),
+                                             name='gender'), nullable=False),
                     sa.PrimaryKeyConstraint('id')
                     )
     op.create_table('movies',
