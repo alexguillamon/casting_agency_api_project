@@ -13,15 +13,7 @@ All code follows [PEP8 style guidelines](https://www.python.org/dev/peps/pep-000
 
 You will need `python`, `pip`, and `postgresql` installed in your local machine in order to run this project.
 
-## Database Setup
-
-With Postgres running, restore a database using the casting_db.pgsql file provided. From the backend folder in terminal run:
-
-```
-psql casting_db < casting_db.pgsql
-```
-
-#### Backend
+## Environment
 
 If you don't have `pipenv` installed yet you can do so by running the following command `pip install pipenv`
 
@@ -29,25 +21,36 @@ We use `pipenv` as our virtual environment and dependency manager of choice but 
 
 From the backend folder run `pipenv shell`. This will create a new virtual environment and install all the needed dependencies listed in the Pipfile.
 
-To run the application run the following commands in your environment :
+### Environment Variables
 
-```
-export FLASK_APP=src/api.py
-flask run
-```
-
-The application will run on `http://127.0.0.1:5000/`
+In `settings.py` you will find an empty .env file named `.env.empty`. Fill the empty variables with the respective data and change the file name to `.env`.
 
 ### Testing
 
 In order to run the test you will need to run the following commands from the `/src` folder:
 
 ```
-dropdb casting_db_test //ommit when running for the first time
-createdb casting_db_test
-psql casting_db_test < casting_db.pgsql
 python test_api.py
 ```
+
+### Database Setup
+
+With Postgres running, restore a database using the casting_db.pgsql file provided. From the backend folder in terminal run:
+
+```
+psql casting_db < casting_db.pgsql
+```
+
+### Running the API
+
+After the instructions above have been folowed, you can run the application as follows:
+
+```
+export FLASK_APP=api.py
+flask run
+```
+
+The application will run on `http://127.0.0.1:5000/`
 
 ## API Reference
 
@@ -249,7 +252,6 @@ The API will return the following error types when requests fail:
 - Response:
   ```
   {
-    "id": 25,
     "success": true
   }
   ```
@@ -281,58 +283,51 @@ The API will return the following error types when requests fail:
 
   ```
   {
-  "actors": [
+  "movies": [
     {
-      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
-      "gender": "male",
-      "id": 1,
-      "movies": [
+      "cast": [
         {
+          "DOB": "2020-12-11",
+          "gender": "Gender.male",
           "id": 1,
-          "release_date": "2020-12-10",
-          "title": "The Movie"
+          "name": "jake"
         }
       ],
-      "name": "jake"
+      "id": 1,
+      "release_date": "Fri, 11 Dec 2020 00:00:00 GMT",
+      "title": "The Movie"
     },
     {
-      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
-      "gender": "female",
-      "id": 2,
-      "movies": [
+      "cast": [
         {
+          "DOB": "2020-12-11",
+          "gender": "Gender.female",
           "id": 2,
-          "release_date": "2020-12-10",
-          "title": "The Not Movie"
+          "name": "vic"
         }
       ],
-      "name": "vic"
+      "id": 2,
+      "release_date": "Fri, 11 Dec 2020 00:00:00 GMT",
+      "title": "The Not Movie"
     },
     {
-      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
-      "gender": "other",
-      "id": 3,
-      "movies": [
+      "cast": [
         {
+          "DOB": "2020-12-11",
+          "gender": "Gender.other",
           "id": 3,
-          "release_date": "2020-12-10",
-          "title": "The Third Movie"
+          "name": "ella"
         }
       ],
-      "name": "ella"
-    },
-    {
-      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
-      "gender": "male",
-      "id": 4,
-      "movies": [],
-      "name": "pedro"
+      "id": 3,
+      "release_date": "Fri, 11 Dec 2020 00:00:00 GMT",
+      "title": "The Third Movie"
     }
   ],
   "page": 1,
   "page_count": 1,
   "success": true,
-  "total_actors": 4
+  "total_movies": 3
   }
 
   ```
@@ -422,12 +417,15 @@ The API will return the following error types when requests fail:
 - Response:
   ```
   {
-    "id": 25,
     "success": true
   }
   ```
 
-## Deployment N/A
+## Deployment
+
+This application is deployed with Heroku to this url: https://casting-agency-api.herokuapp.com/
+
+To deploy changes to the production make a pull request to production if accepted it will be committed and the deploy will start.
 
 ## Authors
 
