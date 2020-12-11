@@ -25,7 +25,30 @@ From the backend folder run `pipenv shell`. This will create a new virtual envir
 
 In `settings.py` you will find an empty .env file named `.env.empty`. Fill the empty variables with the respective data and change the file name to `.env`.
 
-### Testing
+## Authentication and Authorization
+
+This API requires authentication and authorization through JWT. This is implemented using Auth0.
+
+The following are the different permissions and the different access they have to the endpoints:
+
+- Casting Assistant:
+
+  - /actors `GET`
+  - /movies `GET`
+
+- Casting Director:
+
+  - All permissions a Casting Assistant has and…
+  - /actors `POST`, `PATCH` and `DELETE`
+  - /movies `PATCH`
+
+- Executive Producer:
+  - All permissions a Casting Director has and…
+  - /movies `POST` and `DELETE`
+
+To receive the needed tokens to run the tests, please contact me.
+
+## Testing
 
 In order to run the test you will need to run the following commands from the `/src` folder:
 
@@ -33,7 +56,7 @@ In order to run the test you will need to run the following commands from the `/
 python test_api.py
 ```
 
-### Database Setup
+## Database Setup
 
 With Postgres running, restore a database using the casting_db.pgsql file provided. From the backend folder in terminal run:
 
@@ -41,7 +64,7 @@ With Postgres running, restore a database using the casting_db.pgsql file provid
 psql casting_db < casting_db.pgsql
 ```
 
-### Running the API
+## Running the API
 
 After the instructions above have been folowed, you can run the application as follows:
 
@@ -51,6 +74,12 @@ flask run
 ```
 
 The application will run on `http://127.0.0.1:5000/`
+
+## Deployment
+
+This application is deployed with Heroku to this url: https://casting-agency-api.herokuapp.com/
+
+To deploy changes to the production make a pull request to production if accepted it will be committed and the deploy will start.
 
 ## API Reference
 
@@ -75,7 +104,7 @@ The API will return the following error types when requests fail:
 
 - 400: Bad Request
 - 401: Unauthorized
-- 403 Forbidden
+- 403: Forbidden
 - 404: Resource Not Found
 - 405: Method Not Allowed
 - 422: Not Processable
@@ -421,11 +450,26 @@ The API will return the following error types when requests fail:
   }
   ```
 
-## Deployment
+## Authentication and Authorization
 
-This application is deployed with Heroku to this url: https://casting-agency-api.herokuapp.com/
+This API requires authentication and authorization through JWT. This is implemented using Auth0.
 
-To deploy changes to the production make a pull request to production if accepted it will be committed and the deploy will start.
+The following are the different permissions and the different access they have to the endpoints:
+
+- Casting Assistant:
+
+  - /actors `GET`
+  - /movies `GET`
+
+- Casting Director:
+
+  - All permissions a Casting Assistant has and…
+  - /actors `POST`, `PATCH` and `DELETE`
+  - /movies `PATCH`
+
+- Executive Producer:
+  - All permissions a Casting Director has and…
+  - /movies `POST` and `DELETE`
 
 ## Authors
 
