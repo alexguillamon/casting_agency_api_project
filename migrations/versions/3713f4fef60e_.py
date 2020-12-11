@@ -7,6 +7,7 @@ Create Date: 2020-12-11 15:14:40.133125
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import ENUM
 
 
 # revision identifiers, used by Alembic.
@@ -22,8 +23,8 @@ def upgrade():
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('name', sa.String(), nullable=False),
                     sa.Column('DOB', sa.Date(), nullable=False),
-                    sa.Column('gender', sa.Enum('male', 'female', 'other',
-                                                name='gender', create_type=False), nullable=False),
+                    sa.Column('gender', ENUM('male', 'female', 'other',
+                                             name='gender', create_type=False), nullable=False),
                     sa.PrimaryKeyConstraint('id')
                     )
     op.create_table('movies',
