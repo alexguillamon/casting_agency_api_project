@@ -1,4 +1,4 @@
-from settings import DB_PATH, TEST_DB_PATH
+from settings import DATABASE_URL, TEST_DATABASE_URL
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from utils.gender import Gender
@@ -10,7 +10,7 @@ migrate = Migrate()
 
 
 def setup_db(app, test=False):
-    app.config["SQLALCHEMY_DATABASE_URI"] = TEST_DB_PATH if test else DB_PATH
+    app.config["SQLALCHEMY_DATABASE_URI"] = TEST_DATABASE_URL if test else DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
