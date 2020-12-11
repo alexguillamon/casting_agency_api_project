@@ -17,6 +17,8 @@ python-jose = "*"
 flask-migrate = "*"
 psycopg2-binary = "*"
 marshmallow = "*"
+gunicorn = "*"
+flask-script = "*"
 
 [requires]
 python_version = "3.8.5"
