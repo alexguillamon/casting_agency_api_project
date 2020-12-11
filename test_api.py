@@ -11,6 +11,7 @@ class CastingTestingCase(unittest.TestCase):
         self.app = create_app(test=True)
         self.client = self.app.test_client()
         with self.app.app_context():
+            db.create_all()
             seed()
 
     def tearDown(self):
