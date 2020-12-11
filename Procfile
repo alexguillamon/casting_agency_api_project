@@ -1,1 +1,1 @@
-web: gunicorn --chdir src 'api:create_app()'
+web: gunicorn 'api:create_app()'

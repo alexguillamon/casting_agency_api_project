@@ -165,7 +165,7 @@ The API will return the following error types when requests fail:
 
 #### POST `/actors`
 
-- Creates a new actor using the submitted name, DOB (date of birth), gender (male, female, or other), and movies (list of id(s) of movies to add the user too).
+- Creates a new actor using the submitted `name`, `DOB` (date of birth), `gender` (male, female, or other), and `movies` (list of id(s) of movies to add the user too).
 - The request body should be a JSON object and come in the following schema:
 
   ```
@@ -173,11 +173,14 @@ The API will return the following error types when requests fail:
       "name": {"type": "string"},
       "DOB": {"type": "string"}, // Date must be in iso format: "YYYY-MM-DD"
       "gender": {"type": "string"}, // Must be either 'male', 'female', or 'other'
-      "movies": ["type": "integer"], // List of IDs of movies to add (optional)
+      "movies": [
+        "type": "list",
+        "children": "int"
+      ], // List of IDs of movies (optional)
   }
   ```
 
-  - Note: all fields are required except "movies" or else an error response will be returned
+  - Note: all fields are required except `movies` or else an error response will be returned
 
 - Returns an JSON object:
   ```
@@ -201,7 +204,7 @@ The API will return the following error types when requests fail:
 
   #### PATCH `/actors/{int:actor_id}`
 
-- Patches the actor matching the id provided. As POST, it takes the following data: name, DOB (date of birth), gender (male, female, or other), and movies (list of id(s) of movies to add the user too).
+- Patches the actor matching the id provided. As POST, it takes the following data: `name`, `DOB` (date of birth), `gender` (male, female, or other), and `movies` (list of id(s) of movies to add the user too).
 - The request body should be a JSON object and come in the following schema:
 
   ```
@@ -209,7 +212,10 @@ The API will return the following error types when requests fail:
       "name": {"type": "string"},
       "DOB": {"type": "string"}, // Date must be in iso format: "YYYY-MM-DD"
       "gender": {"type": "string"}, // Must be either 'male', 'female', or 'other'
-      "movies": ["type": "integer"], // List of IDs of movies to add (optional)
+      "movies": [
+        "type": "list",
+        "children": "int"
+      ], // List of IDs of movies (optional)
   }
   ```
 
@@ -232,13 +238,186 @@ The API will return the following error types when requests fail:
   }
   ```
 
-#### DELETE `/actors/{int:question_id}`
+#### DELETE `/actors/{int:actor_id}`
 
 - Deletes the actor matching the id provided else returns a 404 error. Returns the `actor_id` of the deleted question.
 
 - Request:
   ```
   curl -X DELETE http://127.0.0.1:5000/actors/25
+  ```
+- Response:
+  ```
+  {
+    "id": 25,
+    "success": true
+  }
+  ```
+
+#### GET `/movies`
+
+- Fetches a list movies. When fetching a list of movies the list will be paginated 100 at a time.
+- Request Arguments:
+
+  - Optional:
+
+    ```
+    ?page=<int:page_number>
+    ```
+
+- Request:
+
+  ```
+  curl http://127.0.0.1:5000/movies
+  ```
+
+  - Note: `page` argument will default to 1
+
+  ```
+  curl http://127.0.0.1:5000/movies?page=3
+  ```
+
+- Response:
+
+  ```
+  {
+  "actors": [
+    {
+      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
+      "gender": "male",
+      "id": 1,
+      "movies": [
+        {
+          "id": 1,
+          "release_date": "2020-12-10",
+          "title": "The Movie"
+        }
+      ],
+      "name": "jake"
+    },
+    {
+      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
+      "gender": "female",
+      "id": 2,
+      "movies": [
+        {
+          "id": 2,
+          "release_date": "2020-12-10",
+          "title": "The Not Movie"
+        }
+      ],
+      "name": "vic"
+    },
+    {
+      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
+      "gender": "other",
+      "id": 3,
+      "movies": [
+        {
+          "id": 3,
+          "release_date": "2020-12-10",
+          "title": "The Third Movie"
+        }
+      ],
+      "name": "ella"
+    },
+    {
+      "DOB": "Thu, 10 Dec 2020 00:00:00 GMT",
+      "gender": "male",
+      "id": 4,
+      "movies": [],
+      "name": "pedro"
+    }
+  ],
+  "page": 1,
+  "page_count": 1,
+  "success": true,
+  "total_actors": 4
+  }
+
+  ```
+
+#### POST `/movies`
+
+- Creates a new movie using the submitted `title`, `release_date`, and `cast` (list of id(s) of actors).
+- The request body should be a JSON object and come in the following schema:
+
+  ```
+  {
+      "title": {"type": "string"},
+      "release_date": {"type": "string"}, // Date must be in iso format: "YYYY-MM-DD"
+      "cast": [
+        "type": "list",
+        "children": "int"
+      ], // List of IDs of actors (optional)
+  }
+  ```
+
+  - Note: all fields are required except `cast` or else an error response will be returned
+
+- Returns an JSON object:
+  ```
+  {
+      "id": Int,
+      "success": Boolean
+  }
+  ```
+- Request:
+  ```
+  curl http://127.0.0.1:5000/movies -X POST -H "Content-Type: application/json" -d '{"name":"alejandro", "DOB":"1990-12-12", "gender":"male"}'
+  ```
+- Response:
+
+  ```
+  {
+      "id": 25,
+      "success": true
+  }
+  ```
+
+  #### PATCH `/movies/{int:movie_id}`
+
+- Patches the movie matching the id provided. As POST, it takes the following data: `title`, `release_date`, and `cast` (list of id(s) of actors).
+- The request body should be a JSON object and come in the following schema:
+
+  ```
+  {
+      "name": {"type": "string"},
+      "DOB": {"type": "string"}, // Date must be in iso format: "YYYY-MM-DD"
+      "gender": {"type": "string"}, // Must be either 'male', 'female', or 'other'
+      "cast": [
+        "type": "list",
+        "children": "int"
+      ], // List of IDs of actors (optional)
+  }
+  ```
+
+  - Note: all fields are optional as this is a PATCH request
+
+- Returns an JSON object:
+  ```
+  {
+      "success": Boolean
+  }
+  ```
+- Request:
+  ```
+  curl http://127.0.0.1:5000/actors/1 -X PATCH -H "Content-Type: application/json" -d '{"name":"New Name", "movies":[1] }'
+  ```
+- Response:
+  ```
+  {
+      "success": true
+  }
+  ```
+
+#### DELETE `/movies/{int:movie_id}`
+
+- Deletes the movie matching the id provided else returns a 404 error. Returns the `movie_id` of the deleted question.
+
+- Request:
+  ```
+  curl -X DELETE http://127.0.0.1:5000/movies/25
   ```
 - Response:
   ```
