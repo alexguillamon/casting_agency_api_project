@@ -73,6 +73,8 @@ class inheritedTestCase(unittest.TestCase):
                 "json": {},
                 "headers": self.header
             }
+        elif "headers" not in options:
+            options["headers"] = self.header
         res = self.client.open(path, **options)
         data = res.get_json()
         return [res.status_code, data]
