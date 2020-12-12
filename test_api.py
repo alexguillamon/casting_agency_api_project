@@ -152,8 +152,9 @@ class ActorsTestingCase(inheritedTestCase):
                 "method": "POST",
                 "json": json
             }
-            code, data = self.client_request(self.endpoint, options)
-            self.check_failure(code, data, expected_code)
+            with self.subTest():
+                code, data = self.client_request(self.endpoint, options)
+                self.check_failure(code, data, expected_code)
 
     def test_patch_actor(self):
         test_data = {
