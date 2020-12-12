@@ -7,7 +7,16 @@ from utils.gender import Gender
 from utils.db_init_data import seed
 
 
-class CastingTestingCase(unittest.TestCase):
+class inheritedTestCase(unittest.TestCase):
+    header = {"Content-Type": "application/json",
+              "Authorization": f"Bearer {PRODUCER_TOKEN}"}
+    assistant_header = {"Content-Type": "application/json",
+                        "Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+    director_header = {"Content-Type": "application/json",
+                       "Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+    producer_header = {"Content-Type": "application/json",
+                       "Authorization": f"Bearer {PRODUCER_TOKEN}"}
+
     def setUp(self):
         self.app = create_app(test=True)
         self.client = self.app.test_client()
@@ -19,21 +28,25 @@ class CastingTestingCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
-    header = {"Content-Type": "application/json",
-              "Authorization": f"Bearer {PRODUCER_TOKEN}"}
-    assistant_header = {"Content-Type": "application/json",
-                        "Authorization": f"Bearer {ASSISTANT_TOKEN}"}
-    director_header = {"Content-Type": "application/json",
-                       "Authorization": f"Bearer {DIRECTOR_TOKEN}"}
-    producer_header = {"Content-Type": "application/json",
-                       "Authorization": f"Bearer {PRODUCER_TOKEN}"}
-    # Actors test cases
+    def client_request(self, path, method="GET", json={}, success=True, headers=header):
+        """
+        docstring
+        """
+        res = self.client.open(path, method=method, json=json, headers=headers)
+        data = res.get_json()
+        if success is True:
+            self.assertEqual(res.status_code, 200)
+            self.assertTrue(data["success"])
+        else:
+            self.assertFalse(data["success"])
+        return [res.status_code, data]
+
+
+class ActorsTestingCase(inheritedTestCase):
+    endpoint = "/actors"
 
     def test_get_actors(self):
-        res = self.client.get("/actors", headers=self.header)
-        data = res.get_json()
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
+        self.client_request(self.endpoint)
 
     def test_get_actors_error(self):
         res = self.client.get("/actors?page=2", headers=self.header)
@@ -165,7 +178,8 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
-    # Movies test cases
+
+class MoviesTestingCase(inheritedTestCase):
 
     def test_get_movies(self):
         res = self.client.get("/movies", headers=self.header)
@@ -290,7 +304,8 @@ class CastingTestingCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
 
-    # Roles test cases
+
+class RolesTestingCase(inheritedTestCase):
     def test_assistant_role(self):
         res = self.client.get("/actors", headers=self.assistant_header)
         data = res.get_json()
