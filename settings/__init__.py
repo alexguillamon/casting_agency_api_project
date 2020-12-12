@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+if os.path.isfile(".env"):
+    load_dotenv()
 
 # Auth0 env variables
 AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
