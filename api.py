@@ -1,5 +1,10 @@
 from settings import ITEMS_PER_PAGE
-from flask import Flask, request, abort, jsonify
+from flask import (
+    Flask,
+    request,
+    abort,
+    jsonify
+)
 from flask_cors import CORS
 from database import db, setup_db
 from database.models import Movie, Actor
