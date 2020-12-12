@@ -24,6 +24,13 @@ def create_app(test=False):
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
+    @app.route("/")
+    def index():
+        return {
+            "success": True,
+            "message": "Casting API is live and running"
+        }
+
     @app.after_request
     def after_request_func(response):
         response.headers.add("Access-Control-Allow-Origin", "*")
