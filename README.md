@@ -1,9 +1,11 @@
 # Casting Agency Project
 
-This project is simple api for Actors and Movies to be used for the front end software of a fictitious casting agency. The goal of this project is two fold:
+This project is simple api for Actors and Movies to be used for the front end software of a fictitious casting agency.
 
-1. To create a great easy to use API that handles request efficiently and error gracefully.
-2. To apply and show my skills as a Full Stack Developer by accomplishing goal 1.
+The motivation for this project is two fold:
+
+1. To create a simple and easy to use API that handles request efficiently and error gracefully.
+2. To apply and show my skills as a Full Stack Developer to potential employers by accomplishing goal 1.
 
 All code follows [PEP8 style guidelines](https://www.python.org/dev/peps/pep-0008/).
 
@@ -15,7 +17,11 @@ You will need `python`, `pip`, and `postgresql` installed in your local machine 
 
 ## Environment
 
-If you don't have `pipenv` installed yet you can do so by running the following command `pip install pipenv`
+If you don't have `pipenv` installed yet you can do so by running the following command
+
+```
+pip install pipenv
+```
 
 We use `pipenv` as our virtual environment and dependency manager of choice but you are welcomed to use your preferred one.
 
@@ -68,8 +74,17 @@ psql casting_db < casting_db.pgsql
 
 After the instructions above have been folowed, you can run the application as follows:
 
+### On Unix:
+
 ```
 export FLASK_APP=api.py
+flask run
+```
+
+### On Windows:
+
+```
+set FLASK_APP=app.py;
 flask run
 ```
 
