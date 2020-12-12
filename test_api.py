@@ -1,7 +1,8 @@
 from settings import ASSISTANT_TOKEN, DIRECTOR_TOKEN, PRODUCER_TOKEN
 import unittest
 from api import create_app
-from database.models import db, Movie, Actor
+from database import db
+from database.models import Movie, Actor
 from utils.gender import Gender
 from utils.db_init_data import seed
 
