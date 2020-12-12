@@ -177,35 +177,38 @@ class ActorsTestingCase(inheritedTestCase):
         self.assertEqual(len(movies), 2)
 
     def test_patch_actor_error(self):
-        res = self.client.patch("/actors/1", json={
-            "name": "",
-            "movies": [2, 3],
-            "detach_movies": [1]
-        }, headers=self.header)
-        data = res.get_json()
+        test_data = [
+            {
+                "code": 422,
+                "json": {
+                    "name": "",
+                    "movies": [2, 3],
+                    "detach_movies": [1]
+                }
+            }, {
+                "code": 404,
+                "json": {
+                    "name": "New Name",
+                    "movies": [2, 3, 20],
+                    "detach_movies": [1]
+                }
+            }, {
+                "code": 404,
+                "json": {
+                    "name": "New Name",
+                    "movies": [2, 3],
+                    "detach_movies": [60]
+                }
+            }
+        ]
+        path = self.endpoint + "/1"
+        for case in test_data:
+            expected_code, json = case.values()
 
-        self.assertEqual(res.status_code, 422)
-        self.assertFalse(data["success"])
-
-        res = self.client.patch("/actors/1", json={
-            "name": "New Name",
-            "movies": [2, 3, 20],
-            "detach_movies": [1]
-        }, headers=self.header)
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
-
-        res = self.client.patch("/actors/1", json={
-            "name": "New Name",
-            "movies": [2, 3],
-            "detach_movies": [60]
-        }, headers=self.header)
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
+            with self.subTest():
+                request_code, data = self.client_request(
+                    path, {"method": "PATCH", "json": json})
+                self.check_failure(request_code, data, expected_code)
 
     def test_delete_actor(self):
         res = self.client.delete("/actors/1", headers=self.header)
