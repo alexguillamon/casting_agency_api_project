@@ -28,17 +28,53 @@ class inheritedTestCase(unittest.TestCase):
         with self.app.app_context():
             db.drop_all()
 
-    def client_request(self, path, method="GET", json={}, success=True, headers=header):
+    def check_success(self, code, data, expected_code=200):
         """
-        docstring
+        This method abstract assertions for successfull status codes
+        and `success`from JSON data.
+
+        Parameters:
+            code: status code from the request
+            data: JSON parsed data from the request
+            expected_code: the expected code from the request
         """
-        res = self.client.open(path, method=method, json=json, headers=headers)
+        self.assertEqual(code, expected_code)
+        self.assertTrue(data["success"])
+        return True
+
+    def check_failure(self, code, data, expected_code):
+        """
+        This method abstract assertions for unsuccessfull status codes
+        and `success` from JSON data.
+
+        Parameters:
+            code: status code from the request
+            data: JSON parsed data from the request
+            expected_code: the expected code from the request
+        """
+        self.assertEqual(code, expected_code)
+        self.assertEqual(data["error"], expected_code)
+        return True
+
+    def client_request(self, path, options=None):
+        """
+        This method abstracts client request code.
+
+        Parameters:
+            path: path to the desired endpoint
+            options: dictionary of parameters to be passed to the test client
+                    This dictionary will allow any parameter that
+                    flask.testing.FlaskClient's `open` method takes.
+                    For reference see https://flask.palletsprojects.com/en/1.1.x/api/#flask.testing.FlaskClient
+        """
+        if options is None:
+            options = {
+                "method": "GET",
+                "json": {},
+                "headers": self.header
+            }
+        res = self.client.open(path, **options)
         data = res.get_json()
-        if success is True:
-            self.assertEqual(res.status_code, 200)
-            self.assertTrue(data["success"])
-        else:
-            self.assertFalse(data["success"])
         return [res.status_code, data]
 
 
@@ -46,14 +82,13 @@ class ActorsTestingCase(inheritedTestCase):
     endpoint = "/actors"
 
     def test_get_actors(self):
-        self.client_request(self.endpoint)
+        code, data = self.client_request(self.endpoint)
+        self.check_success(code, data, 200)
 
     def test_get_actors_error(self):
-        res = self.client.get("/actors?page=2", headers=self.header)
-        data = res.get_json()
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 404)
+        path = self.endpoint + "?page=2"
+        code, data = self.client_request(path)
+        self.check_failure(code, data, 404)
 
     def test_post_actors(self):
         res = self.client.post(
