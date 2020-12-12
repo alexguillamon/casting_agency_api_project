@@ -113,46 +113,47 @@ class ActorsTestingCase(inheritedTestCase):
         self.assertEqual(data["id"], actor.id)
 
     def test_post_actors_error(self):
-        res = self.client.post(
-            "/actors", json={
-                "name": 'alejandro',
-                "DOB": '2002-03-33',
-                "gender": Gender.male.name
-            }, headers=self.header)
-        data = res.get_json()
-        self.assertEqual(res.status_code, 422)
-        self.assertFalse(data["success"])
+        test_data = [
+            {
+                "code": 422,
+                "json": {
+                    "name": 'alejandro',
+                    "DOB": '2002-03-33',
+                    "gender": Gender.male.name
+                }
+            }, {
+                "code": 422,
+                "json": {
+                    "name": 'alejandro',
+                    "DOB": '2002-03-30',
+                    "gender": "not a gender"
+                }
+            }, {
+                "code": 422,
+                "json": {
+                    "name": '',
+                    "DOB": '2002-03-30',
+                    "gender": "not a gender"
+                }
+            }, {
+                "code": 404,
+                "json": {
+                    "name": 'alejandro',
+                    "DOB": '2002-03-30',
+                    "gender": Gender.male.name,
+                    "movies": [30]
+                }
+            }
+        ]
 
-        res1 = self.client.post(
-            "/actors", json={
-                "name": 'alejandro',
-                "DOB": '2002-03-30',
-                "gender": "not a gender"
-            }, headers=self.header)
-        data1 = res1.get_json()
-        self.assertEqual(res1.status_code, 422)
-        self.assertFalse(data1["success"])
-
-        res2 = self.client.post(
-            "/actors", json={
-                "name": '',
-                "DOB": '2002-03-30',
-                "gender": "not a gender"
-            }, headers=self.header)
-        data2 = res2.get_json()
-        self.assertEqual(res2.status_code, 422)
-        self.assertFalse(data2["success"])
-
-        res3 = self.client.post(
-            "/actors", json={
-                "name": 'alejandro',
-                "DOB": '2002-03-30',
-                "gender": Gender.male.name,
-                "movies": [30]
-            }, headers=self.header)
-        data3 = res3.get_json()
-        self.assertEqual(res3.status_code, 404)
-        self.assertFalse(data3["success"])
+        for case in test_data:
+            expected_code, json = case.values()
+            options = {
+                "method": "POST",
+                "json": json
+            }
+            code, data = self.client_request(self.endpoint, options)
+            self.check_failure(code, data, expected_code)
 
     def test_patch_actor(self):
         res = self.client.patch("/actors/1", json={
