@@ -93,19 +93,23 @@ class ActorsTestingCase(inheritedTestCase):
         self.check_failure(code, data, 404)
 
     def test_post_actors(self):
-        res = self.client.post(
-            "/actors", json={
-                "name": 'alejandro',
-                "DOB": '2002-03-11',
-                "gender": str(Gender.male.name)
-            }, headers=self.header)
-        data = res.get_json()
+        test_data = {
+            "name": 'alejandro',
+            "DOB": '2002-03-11',
+            "gender": str(Gender.male.name)
+        }
+
+        options = {
+            "method": "POST",
+            "json": test_data
+        }
+
+        code, data = self.client_request(self.endpoint, options)
+        self.check_success(code, data)
 
         with self.app.app_context():
             actor = Actor.query.filter_by(name="alejandro").first()
 
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
         self.assertEqual(data["id"], actor.id)
 
     def test_post_actors_error(self):
