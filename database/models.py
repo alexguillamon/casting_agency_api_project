@@ -12,16 +12,27 @@ actor_movie = db.Table(
 )
 
 
-class Movie(db.Model):
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class Movie(BaseModel):
     __tablename__ = "movies"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
     release_date = db.Column(db.Date, nullable=False)
     cast = db.relationship("Actor", secondary=actor_movie, backref="movies")
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -37,10 +48,6 @@ class Movie(db.Model):
                 setattr(self, key, value)
         db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def format(self):
         return {
             "id": self.id,
@@ -50,16 +57,12 @@ class Movie(db.Model):
         }
 
 
-class Actor(db.Model):
+class Actor(BaseModel):
     __tablename__ = "actors"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     DOB = db.Column(db.Date, nullable=False)
     gender = db.Column(db.Enum(Gender), nullable=False)
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -73,10 +76,6 @@ class Actor(db.Model):
                 continue
             if hasattr(self, key):
                 setattr(self, key, value)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
         db.session.commit()
 
     def format(self):
