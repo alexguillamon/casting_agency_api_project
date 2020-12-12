@@ -156,18 +156,22 @@ class ActorsTestingCase(inheritedTestCase):
             self.check_failure(code, data, expected_code)
 
     def test_patch_actor(self):
-        res = self.client.patch("/actors/1", json={
+        test_data = {
             "name": "New Name",
             "movies": [2, 3],
             "detach_movies": [1]
-        }, headers=self.header)
-        data = res.get_json()
+        }
+        path = self.endpoint + "/1"
+        response_code, data = self.client_request(path, {
+            "method": "PATCH",
+            "json": test_data
+        })
+        self.check_success(response_code, data)
+
         with self.app.app_context():
             actor = Actor.query.get(1)
             movies = actor.movies
 
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
         self.assertEqual(actor.name, "New Name")
         self.assertEqual(len(movies), 2)
 
