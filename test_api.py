@@ -211,22 +211,21 @@ class ActorsTestingCase(inheritedTestCase):
                 self.check_failure(request_code, data, expected_code)
 
     def test_delete_actor(self):
-        res = self.client.delete("/actors/1", headers=self.header)
-        data = res.get_json()
+        path = self.endpoint + "/1"
+        response_code, data = self.client_request(
+            path, options={"method": "DELETE"})
+        self.check_success(response_code, data)
 
         with self.app.app_context():
             actor = Actor.query.get(1)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
         self.assertIsNone(actor)
 
     def test_delete_actor_error(self):
-        res = self.client.delete("/actors/40", headers=self.header)
-        data = res.get_json()
-
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
+        path = self.endpoint + "/40"
+        response_code, data = self.client_request(
+            path, options={"method": "DELETE"})
+        self.check_failure(response_code, data, 404)
 
 
 class MoviesTestingCase(inheritedTestCase):
