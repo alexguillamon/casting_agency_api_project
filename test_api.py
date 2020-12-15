@@ -229,19 +229,16 @@ class ActorsTestingCase(inheritedTestCase):
 
 
 class MoviesTestingCase(inheritedTestCase):
+    endpoint = "/movies"
 
     def test_get_movies(self):
-        res = self.client.get("/movies", headers=self.header)
-        data = res.get_json()
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
+        code, data = self.client_request(self.endpoint)
+        self.check_success(code, data, 200)
 
     def test_get_movies_error(self):
-        res = self.client.get("/movies?page=2", headers=self.header)
-        data = res.get_json()
-        self.assertEqual(res.status_code, 404)
-        self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 404)
+        path = self.endpoint + "?page=2"
+        code, data = self.client_request(path)
+        self.check_failure(code, data, 404)
 
     def test_post_movie(self):
         res = self.client.post(
